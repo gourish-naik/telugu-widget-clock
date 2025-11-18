@@ -9,21 +9,20 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.CheckBox;
+import android.widget.*;
 import android.util.Log;
 
 public class TeluguClockWidgetConfigureActivity extends Activity {
 
     private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
+
     private EditText mFontSizeEditText;
     private EditText mFontColorEditText;
+
     private RadioGroup mHorizontalGravityRadioGroup;
     private RadioGroup mVerticalGravityRadioGroup;
     private RadioGroup mTimeFormatRadioGroup;
+
     private CheckBox mShowAmPmIconCheckBox;
     private CheckBox mFontBoldCheckBox;
     private CheckBox mShowBackgroundOverlayCheckBox;
@@ -31,21 +30,31 @@ public class TeluguClockWidgetConfigureActivity extends Activity {
     private CheckBox mShowDateCheckBox;
     private CheckBox mShowTextShadowCheckBox;
 
+    private Spinner mFontFamilySpinner;
+
+    // Available fonts in "res/font/"
+    private final String[] AVAILABLE_FONTS = {
+            "noto_sans_telugu",     // must match: res/font/noto_sans_telugu.ttf
+            "noto_serif_telugu",
+            "poppins_regular",
+            "roboto_regular"
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_telugu_clock_widget_configure);
 
-        // Set the result to CANCELED.  This will cause the widget host to cancel
-        // out of the widget placement if the user presses the back button.
         setResult(RESULT_CANCELED);
 
+        // Bind UI
         mFontSizeEditText = findViewById(R.id.font_size_edit_text);
         mFontColorEditText = findViewById(R.id.font_color_edit_text);
+
         mHorizontalGravityRadioGroup = findViewById(R.id.horizontal_gravity_radio_group);
         mVerticalGravityRadioGroup = findViewById(R.id.vertical_gravity_radio_group);
         mTimeFormatRadioGroup = findViewById(R.id.time_format_radio_group);
+
         mShowAmPmIconCheckBox = findViewById(R.id.show_am_pm_icon_checkbox);
         mFontBoldCheckBox = findViewById(R.id.font_bold_checkbox);
         mShowBackgroundOverlayCheckBox = findViewById(R.id.show_background_overlay_checkbox);
@@ -53,194 +62,165 @@ public class TeluguClockWidgetConfigureActivity extends Activity {
         mShowDateCheckBox = findViewById(R.id.show_date_checkbox);
         mShowTextShadowCheckBox = findViewById(R.id.show_text_shadow_checkbox);
 
+        mFontFamilySpinner = findViewById(R.id.font_family_spinner);
 
-        Button saveButton = findViewById(R.id.save_button);
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final Context context = TeluguClockWidgetConfigureActivity.this;
+        // Spinner: font family
+        ArrayAdapter<String> fontAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item,
+                AVAILABLE_FONTS);
+        fontAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mFontFamilySpinner.setAdapter(fontAdapter);
 
-                // When the button is clicked, save the string in our prefs and return that they
-                // clicked OK.
-                String fontSizeStr = mFontSizeEditText.getText().toString();
-                String fontColorStr = mFontColorEditText.getText().toString();
-
-                int fontSize = 48;
-                if (!fontSizeStr.isEmpty()) {
-                    fontSize = Integer.parseInt(fontSizeStr);
-                }
-
-                int fontColor = Color.WHITE;
-                if (!fontColorStr.isEmpty()) {
-                    try {
-                        fontColor = Color.parseColor(fontColorStr);
-                    } catch (IllegalArgumentException e) {
-                        // Invalid color format, use default
-                    }
-                }
-
-                int selectedHorizontalGravityId = mHorizontalGravityRadioGroup.getCheckedRadioButtonId();
-                int horizontalGravity = Gravity.CENTER_HORIZONTAL;
-                if (selectedHorizontalGravityId == R.id.left_radio_button) {
-                    horizontalGravity = Gravity.LEFT;
-                } else if (selectedHorizontalGravityId == R.id.right_radio_button) {
-                    horizontalGravity = Gravity.RIGHT;
-                }
-
-                int selectedVerticalGravityId = mVerticalGravityRadioGroup.getCheckedRadioButtonId();
-                int verticalGravity = Gravity.CENTER_VERTICAL;
-                if (selectedVerticalGravityId == R.id.top_radio_button) {
-                    verticalGravity = Gravity.TOP;
-                } else if (selectedVerticalGravityId == R.id.bottom_radio_button) {
-                    verticalGravity = Gravity.BOTTOM;
-                }
-
-                int selectedTimeFormatId = mTimeFormatRadioGroup.getCheckedRadioButtonId();
-                boolean is12HourFormat = (selectedTimeFormatId == R.id.format_12_hour_radio_button);
-                boolean showAmPmIcon = mShowAmPmIconCheckBox.isChecked();
-                boolean isFontBold = mFontBoldCheckBox.isChecked();
-                boolean showBackgroundOverlay = mShowBackgroundOverlayCheckBox.isChecked();
-                String backgroundOverlayColorStr = mBackgroundOverlayColorEditText.getText().toString();
-                int backgroundOverlayColor = Color.TRANSPARENT;
-                if (!backgroundOverlayColorStr.isEmpty()) {
-                    try {
-                        backgroundOverlayColor = Color.parseColor(backgroundOverlayColorStr);
-                    } catch (IllegalArgumentException e) {
-                        // Invalid color format, use default
-                    }
-                }
-                boolean showDate = mShowDateCheckBox.isChecked();
-                boolean showTextShadow = mShowTextShadowCheckBox.isChecked();
-
-                final Bundle options = new Bundle();
-                options.putInt("font_size", fontSize);
-                options.putInt("font_color", fontColor);
-                options.putInt("horizontal_gravity", horizontalGravity);
-                options.putInt("vertical_gravity", verticalGravity);
-                options.putBoolean("is_12_hour_format", is12HourFormat);
-                options.putBoolean("show_am_pm_icon", showAmPmIcon);
-                options.putBoolean("is_font_bold", isFontBold);
-                options.putBoolean("show_background_overlay", showBackgroundOverlay);
-                options.putInt("background_overlay_color", backgroundOverlayColor);
-                options.putBoolean("show_date", showDate);
-                options.putBoolean("show_text_shadow", showTextShadow);
-
-                savePrefs(context, mAppWidgetId, fontSize, fontColor, horizontalGravity, verticalGravity, is12HourFormat, showAmPmIcon, isFontBold, showBackgroundOverlay, backgroundOverlayColor, showDate, showTextShadow);
-
-                // It is the responsibility of the configuration activity to update the app widget
-                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-                TeluguClockWidget.updateAppWidgetWithPrefs(context, appWidgetManager, mAppWidgetId, options);
-
-                // Make sure we pass back the original appWidgetId
-                Intent resultValue = new Intent();
-                resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
-                setResult(RESULT_OK, resultValue);
-                finish();
-            }
-        });
-
-        // Find the widget id from the intent.
+        // Read widgetId
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         if (extras != null) {
-            mAppWidgetId = extras.getInt(
-                    AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+            mAppWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID,
+                    AppWidgetManager.INVALID_APPWIDGET_ID);
         }
-
-        // If this activity was started with an intent without an app widget ID, finish with an error.
         if (mAppWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
             finish();
             return;
         }
 
+        // Load existing prefs
         loadPrefs(this, mAppWidgetId);
+
+        // Save button
+        Button saveButton = findViewById(R.id.save_button);
+        saveButton.setOnClickListener(v -> saveConfigAndFinish());
     }
 
-    private void loadPrefs(Context context, int appWidgetId) {
-        SharedPreferences prefs = context.getSharedPreferences("widget_prefs_" + appWidgetId, Context.MODE_PRIVATE);
+    private void saveConfigAndFinish() {
+        Context context = TeluguClockWidgetConfigureActivity.this;
+
+        int fontSize = getIntOrDefault(mFontSizeEditText.getText().toString(), 48);
+        int fontColor = parseColorOrDefault(mFontColorEditText.getText().toString(), Color.WHITE);
+
+        // Gravity
+        int horizontalGravity = Gravity.CENTER_HORIZONTAL;
+        int selectedH = mHorizontalGravityRadioGroup.getCheckedRadioButtonId();
+        if (selectedH == R.id.left_radio_button) horizontalGravity = Gravity.LEFT;
+        else if (selectedH == R.id.right_radio_button) horizontalGravity = Gravity.RIGHT;
+
+        int verticalGravity = Gravity.CENTER_VERTICAL;
+        int selectedV = mVerticalGravityRadioGroup.getCheckedRadioButtonId();
+        if (selectedV == R.id.top_radio_button) verticalGravity = Gravity.TOP;
+        else if (selectedV == R.id.bottom_radio_button) verticalGravity = Gravity.BOTTOM;
+
+        boolean is12h = mTimeFormatRadioGroup.getCheckedRadioButtonId() == R.id.format_12_hour_radio_button;
+
+        boolean showAmPm = mShowAmPmIconCheckBox.isChecked();
+        boolean bold = mFontBoldCheckBox.isChecked();
+        boolean overlay = mShowBackgroundOverlayCheckBox.isChecked();
+        boolean showDate = mShowDateCheckBox.isChecked();
+        boolean shadow = mShowTextShadowCheckBox.isChecked();
+
+        int overlayColor = parseColorOrDefault(mBackgroundOverlayColorEditText.getText().toString(), Color.TRANSPARENT);
+
+        // Selected font family
+        String fontFamily = AVAILABLE_FONTS[mFontFamilySpinner.getSelectedItemPosition()];
+
+        // Save prefs
+        savePrefs(context, mAppWidgetId, fontSize, fontColor, horizontalGravity, verticalGravity,
+                is12h, showAmPm, bold, overlay, overlayColor, showDate, shadow, fontFamily);
+
+        // Trigger widget update
+        AppWidgetManager manager = AppWidgetManager.getInstance(context);
+        TeluguClockWidget.updateWidgetStatic(context, manager, mAppWidgetId);
+
+        // Return result
+        Intent resultValue = new Intent();
+        resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
+        setResult(RESULT_OK, resultValue);
+        finish();
+    }
+
+    private int parseColorOrDefault(String str, int def) {
+        try {
+            return Color.parseColor(str);
+        } catch (Exception e) {
+            return def;
+        }
+    }
+
+    private int getIntOrDefault(String str, int def) {
+        try {
+            return Integer.parseInt(str);
+        } catch (Exception e) {
+            return def;
+        }
+    }
+
+    private void savePrefs(Context context, int id,
+                           int fontSize, int fontColor,
+                           int hGravity, int vGravity,
+                           boolean is12h, boolean showAmPm,
+                           boolean bold, boolean overlay,
+                           int overlayColor,
+                           boolean showDate, boolean shadow,
+                           String fontFamily) {
+
+        SharedPreferences.Editor prefs = context.getSharedPreferences("widget_prefs_" + id, MODE_PRIVATE).edit();
+
+        prefs.putInt("font_size", fontSize);
+        prefs.putInt("font_color", fontColor);
+        prefs.putInt("horizontal_gravity", hGravity);
+        prefs.putInt("vertical_gravity", vGravity);
+        prefs.putBoolean("is_12_hour_format", is12h);
+        prefs.putBoolean("show_am_pm_icon", showAmPm);
+        prefs.putBoolean("is_font_bold", bold);
+        prefs.putBoolean("show_background_overlay", overlay);
+        prefs.putInt("background_overlay_color", overlayColor);
+        prefs.putBoolean("show_date", showDate);
+        prefs.putBoolean("show_text_shadow", shadow);
+
+        // NEW LINE: save selected font family  
+        prefs.putString("font_family", fontFamily);
+
+        prefs.apply();
+    }
+
+    private void loadPrefs(Context context, int id) {
+        SharedPreferences prefs = context.getSharedPreferences("widget_prefs_" + id, MODE_PRIVATE);
+
         int fontSize = prefs.getInt("font_size", 48);
         int fontColor = prefs.getInt("font_color", Color.WHITE);
-        int horizontalGravity = prefs.getInt("horizontal_gravity", Gravity.CENTER_HORIZONTAL);
-        int verticalGravity = prefs.getInt("vertical_gravity", Gravity.CENTER_VERTICAL);
-        boolean is12HourFormat = prefs.getBoolean("is_12_hour_format", true); // Default to 12-hour format
-        boolean showAmPmIcon = prefs.getBoolean("show_am_pm_icon", false); // Default to not showing AM/PM icon
-        boolean isFontBold = prefs.getBoolean("is_font_bold", false); // Default to not bold
-        boolean showBackgroundOverlay = prefs.getBoolean("show_background_overlay", false);
-        int backgroundOverlayColor = prefs.getInt("background_overlay_color", Color.TRANSPARENT);
-        boolean showDate = prefs.getBoolean("show_date", false);
-        boolean showTextShadow = prefs.getBoolean("show_text_shadow", false);
 
         mFontSizeEditText.setText(String.valueOf(fontSize));
         mFontColorEditText.setText(String.format("#%06X", (0xFFFFFF & fontColor)));
 
-        if (horizontalGravity == Gravity.LEFT) {
-            mHorizontalGravityRadioGroup.check(R.id.left_radio_button);
-        } else if (horizontalGravity == Gravity.RIGHT) {
-            mHorizontalGravityRadioGroup.check(R.id.right_radio_button);
-        } else {
-            mHorizontalGravityRadioGroup.check(R.id.center_horizontal_radio_button);
+        // Gravity
+        int h = prefs.getInt("horizontal_gravity", Gravity.CENTER_HORIZONTAL);
+        if (h == Gravity.LEFT) mHorizontalGravityRadioGroup.check(R.id.left_radio_button);
+        else if (h == Gravity.RIGHT) mHorizontalGravityRadioGroup.check(R.id.right_radio_button);
+        else mHorizontalGravityRadioGroup.check(R.id.center_horizontal_radio_button);
+
+        int v = prefs.getInt("vertical_gravity", Gravity.CENTER_VERTICAL);
+        if (v == Gravity.TOP) mVerticalGravityRadioGroup.check(R.id.top_radio_button);
+        else if (v == Gravity.BOTTOM) mVerticalGravityRadioGroup.check(R.id.bottom_radio_button);
+        else mVerticalGravityRadioGroup.check(R.id.center_vertical_radio_button);
+
+        boolean is12h = prefs.getBoolean("is_12_hour_format", true);
+        if (is12h) mTimeFormatRadioGroup.check(R.id.format_12_hour_radio_button);
+        else mTimeFormatRadioGroup.check(R.id.format_24_hour_radio_button);
+
+        mShowAmPmIconCheckBox.setChecked(prefs.getBoolean("show_am_pm_icon", false));
+        mFontBoldCheckBox.setChecked(prefs.getBoolean("is_font_bold", false));
+        mShowBackgroundOverlayCheckBox.setChecked(prefs.getBoolean("show_background_overlay", false));
+        mBackgroundOverlayColorEditText.setText(String.format("#%08X", prefs.getInt("background_overlay_color", Color.TRANSPARENT)));
+        mShowDateCheckBox.setChecked(prefs.getBoolean("show_date", false));
+        mShowTextShadowCheckBox.setChecked(prefs.getBoolean("show_text_shadow", true));
+
+        // Load font family
+        String savedFont = prefs.getString("font_family", AVAILABLE_FONTS[0]);
+
+        // Set spinner selection
+        for (int i = 0; i < AVAILABLE_FONTS.length; i++) {
+            if (AVAILABLE_FONTS[i].equals(savedFont)) {
+                mFontFamilySpinner.setSelection(i);
+                break;
+            }
         }
-
-        if (verticalGravity == Gravity.TOP) {
-            mVerticalGravityRadioGroup.check(R.id.top_radio_button);
-        } else if (verticalGravity == Gravity.BOTTOM) {
-            mVerticalGravityRadioGroup.check(R.id.bottom_radio_button);
-        } else {
-            mVerticalGravityRadioGroup.check(R.id.center_vertical_radio_button);
-        }
-
-        if (is12HourFormat) {
-            mTimeFormatRadioGroup.check(R.id.format_12_hour_radio_button);
-        } else {
-            mTimeFormatRadioGroup.check(R.id.format_24_hour_radio_button);
-        }
-        mShowAmPmIconCheckBox.setChecked(showAmPmIcon);
-        mFontBoldCheckBox.setChecked(isFontBold);
-        mShowBackgroundOverlayCheckBox.setChecked(showBackgroundOverlay);
-        mBackgroundOverlayColorEditText.setText(String.format("#%08X", backgroundOverlayColor));
-        mShowDateCheckBox.setChecked(showDate);
-        mShowTextShadowCheckBox.setChecked(showTextShadow);
-
-        Log.d("WidgetConfig", "Loaded prefs for widget " + appWidgetId + ": " +
-                "fontSize=" + fontSize +
-                ", fontColor=" + String.format("#%08X", fontColor) +
-                ", horizontalGravity=" + horizontalGravity +
-                ", verticalGravity=" + verticalGravity +
-                ", is12HourFormat=" + is12HourFormat +
-                ", showAmPmIcon=" + showAmPmIcon +
-                ", isFontBold=" + isFontBold +
-                ", showBackgroundOverlay=" + showBackgroundOverlay +
-                ", backgroundOverlayColor=" + String.format("#%08X", backgroundOverlayColor) +
-                ", showDate=" + showDate +
-                ", showTextShadow=" + showTextShadow);
-    }
-
-    private void savePrefs(Context context, int appWidgetId, int fontSize, int fontColor, int horizontalGravity, int verticalGravity, boolean is12HourFormat, boolean showAmPmIcon, boolean isFontBold, boolean showBackgroundOverlay, int backgroundOverlayColor, boolean showDate, boolean showTextShadow) {
-        SharedPreferences.Editor prefs = context.getSharedPreferences("widget_prefs_" + appWidgetId, Context.MODE_PRIVATE).edit();
-        prefs.putInt("font_size", fontSize);
-        prefs.putInt("font_color", fontColor);
-        prefs.putInt("horizontal_gravity", horizontalGravity);
-        prefs.putInt("vertical_gravity", verticalGravity);
-        prefs.putBoolean("is_12_hour_format", is12HourFormat);
-        prefs.putBoolean("show_am_pm_icon", showAmPmIcon);
-        prefs.putBoolean("is_font_bold", isFontBold);
-        prefs.putBoolean("show_background_overlay", showBackgroundOverlay);
-        prefs.putInt("background_overlay_color", backgroundOverlayColor);
-        prefs.putBoolean("show_date", showDate);
-        prefs.putBoolean("show_text_shadow", showTextShadow);
-        prefs.apply();
-
-        Log.d("WidgetConfig", "Saved prefs for widget " + appWidgetId + ": " +
-                "fontSize=" + fontSize +
-                ", fontColor=" + String.format("#%08X", fontColor) +
-                ", horizontalGravity=" + horizontalGravity +
-                ", verticalGravity=" + verticalGravity +
-                ", is12HourFormat=" + is12HourFormat +
-                ", showAmPmIcon=" + showAmPmIcon +
-                ", isFontBold=" + isFontBold +
-                ", showBackgroundOverlay=" + showBackgroundOverlay +
-                ", backgroundOverlayColor=" + String.format("#%08X", backgroundOverlayColor) +
-                ", showDate=" + showDate +
-                ", showTextShadow=" + showTextShadow);
     }
 }
