@@ -1,0 +1,5 @@
+# Gradle and IDE artifacts
+.gradle
+/build/
+*/build/
+gradle/wrapper/dists/
