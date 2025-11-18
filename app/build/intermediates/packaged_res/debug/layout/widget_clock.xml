@@ -1,7 +1,24 @@
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/clock_text"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="00:00"
-    android:textColor="#FFFFFF"
-    android:textSize="24sp" />
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/clock_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:padding="8dp">
+
+    <ImageView
+        android:id="@+id/bg_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/rounded_overlay"
+        android:contentDescription="@null" />
+
+    <ImageView
+        android:id="@+id/clock_bitmap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="centerInside"
+        android:contentDescription="@string/clock" />
+
+</FrameLayout>

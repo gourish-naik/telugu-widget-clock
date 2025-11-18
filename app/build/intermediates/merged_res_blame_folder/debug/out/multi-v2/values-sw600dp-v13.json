@@ -4,7 +4,7 @@
             "outputFile": "com.example.teluguclockwidget.app-mergeDebugResources-35:/values-sw600dp-v13/values-sw600dp-v13.xml",
             "map": [
                 {
-                    "source": "/home/gourish/.gradle/caches/transforms-3/629744b3d1b9a45e6b2b5e0f8393ff92/transformed/material-1.10.0/res/values-sw600dp-v13/values-sw600dp-v13.xml",
+                    "source": "/home/gourish/.gradle/caches/transforms-3/6ba17e0ec88f3625b427540d12dcf7f7/transformed/material-1.10.0/res/values-sw600dp-v13/values-sw600dp-v13.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,10,11,12,13,14",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4",
@@ -23,7 +23,7 @@
                     }
                 },
                 {
-                    "source": "/home/gourish/.gradle/caches/transforms-3/7ba610368285ef737a15a687544ee720/transformed/appcompat-1.6.1/res/values-sw600dp-v13/values-sw600dp-v13.xml",
+                    "source": "/home/gourish/.gradle/caches/transforms-3/e17d3498e2bc58829ce9d57a33c515f5/transformed/appcompat-1.6.1/res/values-sw600dp-v13/values-sw600dp-v13.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9",
                         "startColumns": "4,4,4,4,4,4,4,4",

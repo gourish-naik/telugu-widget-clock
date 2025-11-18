@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:minWidth="200dp"
-    android:minHeight="100dp"
-    android:updatePeriodMillis="86400000"
-    android:previewImage="@drawable/ic_launcher_background"
+    android:minWidth="110dp"
+    android:minHeight="110dp"
+    android:minResizeWidth="40dp"
+    android:minResizeHeight="40dp"
+    android:updatePeriodMillis="0"
+    android:previewImage="@mipmap/ic_launcher"
     android:initialLayout="@layout/widget_clock"
     android:configure="com.example.teluguclockwidget.TeluguClockWidgetConfigureActivity"
     android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen|keyguard"
-    android:description="@string/app_name">
-</appwidget-provider>
+    android:description="@string/app_name" />

@@ -1,160 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/font_size_edit_text"
+    <LinearLayout
+        android:padding="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Font Size (e.g., 48)"
-        android:inputType="number" />
+        android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/font_color_edit_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Font Color (e.g., #FFFFFF)" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Font size (sp)" />
 
-    <CheckBox
-        android:id="@+id/font_bold_checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Bold Font"
-        android:layout_marginTop="8dp"/>
+        <EditText
+            android:id="@+id/font_size_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:hint="48" />
 
-    <CheckBox
-        android:id="@+id/show_background_overlay_checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Show Background Overlay"
-        android:layout_marginTop="8dp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Font color (#RRGGBB)" 
+            android:paddingTop="8dp"/>
 
-    <EditText
-        android:id="@+id/background_overlay_color_edit_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Overlay Color (e.g., #80000000 for 50% black)" />
+        <EditText
+            android:id="@+id/font_color_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="#FFFFFF" />
 
-    <CheckBox
-        android:id="@+id/show_date_checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Show Date"
-        android:layout_marginTop="8dp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Font family"
+            android:paddingTop="8dp"/>
 
-    <CheckBox
-        android:id="@+id/show_text_shadow_checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Show Text Shadow"
-        android:layout_marginTop="8dp"/>
+        <Spinner
+            android:id="@+id/font_family_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Horizontal Gravity"
-        android:layout_marginTop="16dp"/>
-
-    <RadioGroup
-        android:id="@+id/horizontal_gravity_radio_group"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <RadioButton
-            android:id="@+id/left_radio_button"
+        <CheckBox
+            android:id="@+id/font_bold_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Left" />
+            android:text="Bold"
+            android:paddingTop="8dp" />
 
-        <RadioButton
-            android:id="@+id/center_horizontal_radio_button"
+        <CheckBox
+            android:id="@+id/show_text_shadow_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Center"
-            android:checked="true"/>
+            android:text="Text shadow"
+            android:checked="true" />
 
-        <RadioButton
-            android:id="@+id/right_radio_button"
+        <CheckBox
+            android:id="@+id/show_background_overlay_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Right" />
-    </RadioGroup>
+            android:text="Show overlay (rounded background)" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Vertical Gravity"
-        android:layout_marginTop="16dp"/>
-
-    <RadioGroup
-        android:id="@+id/vertical_gravity_radio_group"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <RadioButton
-            android:id="@+id/top_radio_button"
+        <CheckBox
+            android:id="@+id/show_date_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Top" />
+            android:text="Show date" />
 
-        <RadioButton
-            android:id="@+id/center_vertical_radio_button"
-            android:layout_width="wrap_content"
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Center"
-            android:checked="true"/>
+            android:text="Overlay color (#AARRGGBB)"
+            android:paddingTop="8dp" />
 
-        <RadioButton
-            android:id="@+id/bottom_radio_button"
-            android:layout_width="wrap_content"
+        <EditText
+            android:id="@+id/background_overlay_color_edit_text"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Bottom" />
-    </RadioGroup>
+            android:hint="#66000000" />
 
-    <Button
-        android:id="@+id/save_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp"
-        android:text="Save" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Time Format"
-        android:layout_marginTop="16dp"/>
-
-    <RadioGroup
-        android:id="@+id/time_format_radio_group"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <RadioButton
-            android:id="@+id/format_12_hour_radio_button"
-            android:layout_width="wrap_content"
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="12-hour"
-            android:checked="true"/>
+            android:text="Time format"
+            android:paddingTop="8dp" />
 
-        <RadioButton
-            android:id="@+id/format_24_hour_radio_button"
-            android:layout_width="wrap_content"
+        <RadioGroup
+            android:id="@+id/time_format_radio_group"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="24-hour" />
-    </RadioGroup>
+            android:orientation="horizontal">
+            <RadioButton android:id="@+id/format_12_hour_radio_button" android:text="12h" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+            <RadioButton android:id="@+id/format_24_hour_radio_button" android:text="24h" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+        </RadioGroup>
 
-    <CheckBox
-        android:id="@+id/show_am_pm_icon_checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Show AM/PM Icon"
-        android:layout_marginTop="8dp"/>
+        <Button
+            android:id="@+id/save_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Save"
+            android:layout_marginTop="16dp"/>
 
-</LinearLayout>
+    </LinearLayout>
+</ScrollView>

@@ -1,31 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.teluguclockwidget">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
         android:allowBackup="true"
-        android:dataExtractionRules="@xml/data_extraction_rules"
-        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.TeluguClockWidget"
-        tools:targetApi="34">
+        android:theme="@style/Theme.TeluguClockWidget">
 
-        <!-- ========= WIDGET PROVIDER ========= -->
+        <!-- App Widget Provider -->
         <receiver
             android:name=".TeluguClockWidget"
             android:enabled="true"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/app_name">
-
             <intent-filter>
-                <!-- Required widget update event -->
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-
-                <!-- Optional: custom update intent if you use AlarmManager -->
                 <action android:name="com.example.teluguclockwidget.ACTION_AUTO_UPDATE" />
             </intent-filter>
 
@@ -34,20 +25,15 @@
                 android:resource="@xml/telugu_clock_widget_info" />
         </receiver>
 
-
-        <!-- ========= CONFIGURE ACTIVITY ========= -->
+        <!-- Configure Activity -->
         <activity
             android:name=".TeluguClockWidgetConfigureActivity"
             android:exported="true"
             android:theme="@style/Theme.TeluguClockWidget">
-
-            <!-- REQUIRED for widget configuration screens -->
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
 
-
     </application>
-
 </manifest>

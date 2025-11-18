@@ -77,6 +77,7 @@ animator mtrl_fab_hide_motion_spec
 animator mtrl_fab_show_motion_spec
 animator mtrl_fab_transformation_sheet_collapse_spec
 animator mtrl_fab_transformation_sheet_expand_spec
+array font_family_array
 attr actionBarDivider
 attr actionBarItemBackground
 attr actionBarPopupTheme
@@ -2961,9 +2962,15 @@ drawable notification_template_icon_bg
 drawable notification_template_icon_low_bg
 drawable notification_tile_bg
 drawable notify_panel_notification_icon_bg
+drawable rounded_overlay
 drawable test_level_drawable
 drawable tooltip_frame_dark
 drawable tooltip_frame_light
+font akaya_telivigala
+font ntr
+font ponnala
+font potti_sreeramulu
+font suravaram
 id ALT
 id BOTTOM_END
 id BOTTOM_START
@@ -3050,9 +3057,9 @@ id barrier
 id baseline
 id beginOnFirstDraw
 id beginning
+id bg_overlay
 id blocking
 id bottom
-id bottom_radio_button
 id bounce
 id buttonPanel
 id cancel_button
@@ -3060,9 +3067,7 @@ id center
 id centerCrop
 id centerInside
 id center_horizontal
-id center_horizontal_radio_button
 id center_vertical
-id center_vertical_radio_button
 id chain
 id chains
 id checkbox
@@ -3072,7 +3077,8 @@ id circle_center
 id clear_text
 id clip_horizontal
 id clip_vertical
-id clock_text
+id clock_bitmap
+id clock_container
 id clockwise
 id collapseActionView
 id compress
@@ -3142,6 +3148,7 @@ id flip
 id floating
 id font_bold_checkbox
 id font_color_edit_text
+id font_family_spinner
 id font_size_edit_text
 id forever
 id format_12_hour_radio_button
@@ -3160,7 +3167,6 @@ id hideable
 id home
 id homeAsUp
 id honorRequest
-id horizontal_gravity_radio_group
 id icon
 id icon_group
 id ifRoom
@@ -3179,7 +3185,6 @@ id labeled
 id layout
 id left
 id leftToRight
-id left_radio_button
 id legacy
 id line1
 id line3
@@ -3302,7 +3307,6 @@ id reverseSawtooth
 id right
 id rightToLeft
 id right_icon
-id right_radio_button
 id right_side
 id rounded
 id row_index_key
@@ -3334,7 +3338,6 @@ id shortcut
 id showCustom
 id showHome
 id showTitle
-id show_am_pm_icon_checkbox
 id show_background_overlay_checkbox
 id show_date_checkbox
 id show_text_shadow_checkbox
@@ -3404,7 +3407,6 @@ id title_template
 id toggle
 id top
 id topPanel
-id top_radio_button
 id touch_outside
 id transitionToEnd
 id transitionToStart
@@ -3419,7 +3421,6 @@ id uniform
 id unlabeled
 id up
 id useLogo
-id vertical_gravity_radio_group
 id view_offset_helper
 id view_tree_lifecycle_owner
 id view_tree_on_back_pressed_dispatcher_owner
@@ -3669,6 +3670,7 @@ string character_counter_content_description
 string character_counter_overflowed_content_description
 string character_counter_pattern
 string clear_text_end_icon_content_description
+string clock
 string error_a11y_label
 string error_icon_content_description
 string exposed_dropdown_menu_content_description

@@ -4,7 +4,7 @@
             "outputFile": "com.example.teluguclockwidget.app-mergeDebugResources-35:/values-en-rIN/values-en-rIN.xml",
             "map": [
                 {
-                    "source": "/home/gourish/.gradle/caches/transforms-3/8c25e88eb4ea76e8f3d0900731d8ae12/transformed/core-1.9.0/res/values-en-rIN/values-en-rIN.xml",
+                    "source": "/home/gourish/.gradle/caches/transforms-3/a47a70b2352c84ef670df2281f916ef6/transformed/core-1.9.0/res/values-en-rIN/values-en-rIN.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
@@ -21,7 +21,7 @@
                     }
                 },
                 {
-                    "source": "/home/gourish/.gradle/caches/transforms-3/7ba610368285ef737a15a687544ee720/transformed/appcompat-1.6.1/res/values-en-rIN/values-en-rIN.xml",
+                    "source": "/home/gourish/.gradle/caches/transforms-3/e17d3498e2bc58829ce9d57a33c515f5/transformed/appcompat-1.6.1/res/values-en-rIN/values-en-rIN.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
