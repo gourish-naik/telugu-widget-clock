@@ -1,5 +1,5 @@
-import android.graphics.Color
-import android.graphics.PorterDuff
+package com.example.teluguclockwidget
+
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
@@ -9,10 +9,6 @@ import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
 import java.util.Calendar
-import com.example.teluguclockwidget.WidgetPrefs
-import com.example.teluguclockwidget.ClockBitmapRenderer
-import com.example.teluguclockwidget.R
-import com.example.teluguclockwidget.TeluguClockWidgetConfigureActivity
 
 class TeluguClockWidget : AppWidgetProvider() {
 
@@ -40,18 +36,12 @@ class TeluguClockWidget : AppWidgetProvider() {
                 prefs.fontFamily,
                 prefs.showDate,
                 prefs.dateFormat,
-                prefs.overlay, // Pass overlay preference
-                prefs.overlayTheme // Pass overlay theme
+                prefs.overlay,
+                prefs.overlayTheme
             )
 
             val views = RemoteViews(context.packageName, R.layout.widget_clock)
             views.setImageViewBitmap(R.id.clock_bitmap, bmp)
-
-            // Set visibility of bg_overlay based on prefs.overlay
-            views.setViewVisibility(
-                R.id.bg_overlay,
-                if (prefs.overlay) android.view.View.VISIBLE else android.view.View.GONE
-            )
 
             val intent = Intent(context, TeluguClockWidgetConfigureActivity::class.java).apply {
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
@@ -81,12 +71,12 @@ class TeluguClockWidget : AppWidgetProvider() {
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
 
-            // Calculate EXACT next minute boundary (no delay)
+            // Calculate EXACT next minute boundary
             val now = Calendar.getInstance()
             val nextMinute = Calendar.getInstance().apply {
                 add(Calendar.MINUTE, 1)
                 set(Calendar.SECOND, 0)
-                set(Calendar.MILLISECOND, 0) // Set to 0 for exact minute
+                set(Calendar.MILLISECOND, 0)
             }
             val delayMillis = nextMinute.timeInMillis - now.timeInMillis
 

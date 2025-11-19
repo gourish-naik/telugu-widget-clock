@@ -5,7 +5,6 @@ import android.app.AlertDialog
 import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -20,7 +19,7 @@ class TeluguClockWidgetConfigureActivity : AppCompatActivity() {
     private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
     
     private lateinit var fontSizeEt: EditText
-    private lateinit var colorPickerBtn: Button // Changed from colorPickerButton
+    private lateinit var colorPickerBtn: Button
     private lateinit var colorPreview: View
     private lateinit var fontSpinner: Spinner
     private lateinit var boldCb: CheckBox
@@ -43,7 +42,7 @@ class TeluguClockWidgetConfigureActivity : AppCompatActivity() {
 
         // Initialize views
         fontSizeEt = findViewById(R.id.font_size_edit_text)
-        colorPickerBtn = findViewById(R.id.color_picker_button) // Changed from colorPickerButton
+        colorPickerBtn = findViewById(R.id.color_picker_button)
         colorPreview = findViewById(R.id.color_preview)
         fontSpinner = findViewById(R.id.font_family_spinner)
         boldCb = findViewById(R.id.font_bold_checkbox)
@@ -85,8 +84,8 @@ class TeluguClockWidgetConfigureActivity : AppCompatActivity() {
             else -> R.id.date_format_2
         })
         overlayThemeRg.check(when (prefs.overlayTheme) {
-            "black" -> R.id.overlay_black
-            else -> R.id.overlay_white
+            "white" -> R.id.overlay_white
+            else -> R.id.overlay_black
         })
 
         // set spinner selection
@@ -104,7 +103,7 @@ class TeluguClockWidgetConfigureActivity : AppCompatActivity() {
         }
 
         // Color picker button listener
-        colorPickerBtn.setOnClickListener { // Changed from colorPickerButton
+        colorPickerBtn.setOnClickListener {
             showColorPickerDialog("Select Font Color", selectedFontColor) { color ->
                 selectedFontColor = color
                 colorPreview.setBackgroundColor(selectedFontColor)
@@ -115,7 +114,7 @@ class TeluguClockWidgetConfigureActivity : AppCompatActivity() {
 
     private fun showColorPickerDialog(title: String, initialColor: Int, onColorSelected: (Int) -> Unit) {
         val colors = arrayOf(
-            Color.BLACK, Color.DKGRAY, Color.GRAY, Color.LTGRAY, Color.WHITE,
+            Color.WHITE, Color.LTGRAY, Color.GRAY, Color.DKGRAY, Color.BLACK,
             Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.CYAN, Color.MAGENTA,
             ContextCompat.getColor(this, android.R.color.holo_red_light),
             ContextCompat.getColor(this, android.R.color.holo_green_light),
@@ -124,9 +123,9 @@ class TeluguClockWidgetConfigureActivity : AppCompatActivity() {
             ContextCompat.getColor(this, android.R.color.holo_purple)
         )
         val colorNames = arrayOf(
-            "Black", "Dark Gray", "Gray", "Light Gray", "White",
+            "White", "Light Gray", "Gray", "Dark Gray", "Black",
             "Red", "Green", "Blue", "Yellow", "Cyan", "Magenta",
-            "Light Red", "Light Green", "Light Blue", "Light Orange", "Light Purple"
+            "Light Red", "Light Green", "Light Blue", "Orange", "Purple"
         )
 
         val builder = AlertDialog.Builder(this)
@@ -167,7 +166,6 @@ class TeluguClockWidgetConfigureActivity : AppCompatActivity() {
     }
 
     private fun setupLivePreview() {
-        // Font size changes
         fontSizeEt.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
@@ -176,7 +174,6 @@ class TeluguClockWidgetConfigureActivity : AppCompatActivity() {
             }
         })
 
-        // Font family changes
         fontSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 updatePreview()
@@ -184,7 +181,6 @@ class TeluguClockWidgetConfigureActivity : AppCompatActivity() {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
 
-        // Checkbox changes
         val checkboxListener = CompoundButton.OnCheckedChangeListener { _, _ ->
             updatePreview()
         }
@@ -193,17 +189,14 @@ class TeluguClockWidgetConfigureActivity : AppCompatActivity() {
         overlayCb.setOnCheckedChangeListener(checkboxListener)
         showDateCb.setOnCheckedChangeListener(checkboxListener)
 
-        // Time format changes
         timeFormatRg.setOnCheckedChangeListener { _, _ ->
             updatePreview()
         }
 
-        // Date format changes
         dateFormatRg.setOnCheckedChangeListener { _, _ ->
             updatePreview()
         }
 
-        // Overlay theme changes
         overlayThemeRg.setOnCheckedChangeListener { _, _ ->
             updatePreview()
         }
@@ -211,21 +204,24 @@ class TeluguClockWidgetConfigureActivity : AppCompatActivity() {
 
     private fun updatePreview() {
         try {
-            // Get current settings
             val prefs = WidgetPrefs(this, appWidgetId)
             val fontSize = fontSizeEt.text.toString().toIntOrNull() ?: prefs.fontSize
-            val fontColor = selectedFontColor // Use selectedFontColor
+            val fontColor = selectedFontColor
             val fontFamily = fonts[fontSpinner.selectedItemPosition]
             val bold = boldCb.isChecked
             val shadow = shadowCb.isChecked
+            val overlay = overlayCb.isChecked
             val showDate = showDateCb.isChecked
-            val dateFormat = when (dateFormatRg.checkedRadioButtonId) { // Get dateFormat
+            val dateFormat = when (dateFormatRg.checkedRadioButtonId) {
                 R.id.date_format_1 -> 1
                 else -> 2
             }
+            val overlayTheme = when (overlayThemeRg.checkedRadioButtonId) {
+                R.id.overlay_white -> "white"
+                else -> "black"
+            }
             val is12h = timeFormatRg.checkedRadioButtonId == R.id.format_12_hour_radio_button
 
-            // Generate preview time
             val cal = Calendar.getInstance()
             var hour = if (is12h) cal.get(Calendar.HOUR) else cal.get(Calendar.HOUR_OF_DAY)
             if (is12h && hour == 0) hour = 12
@@ -234,7 +230,6 @@ class TeluguClockWidgetConfigureActivity : AppCompatActivity() {
             val formatted = String.format("%02d:%02d", hour, minute)
             val telugu = ClockBitmapRenderer.toTelugu(formatted)
 
-            // Render preview bitmap
             val bmp = ClockBitmapRenderer.render(
                 this,
                 telugu,
@@ -244,18 +239,16 @@ class TeluguClockWidgetConfigureActivity : AppCompatActivity() {
                 shadow,
                 fontFamily,
                 showDate,
-                dateFormat // Pass dateFormat
+                dateFormat,
+                overlay,
+                overlayTheme
             )
 
-            // Set preview image
             previewImage.setImageBitmap(bmp)
-            
-            // Remove preview background logic, as overlay is handled by TeluguClockWidget.kt
             previewImage.setBackgroundColor(Color.TRANSPARENT)
             previewImage.setPadding(0, 0, 0, 0)
 
         } catch (e: Exception) {
-            // If preview fails, show error message
             Toast.makeText(this, "Preview error: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
@@ -264,39 +257,36 @@ class TeluguClockWidgetConfigureActivity : AppCompatActivity() {
         val prefs = WidgetPrefs(this, appWidgetId)
         
         val fontSize = fontSizeEt.text.toString().toIntOrNull() ?: prefs.fontSize
-        val fontColor = selectedFontColor // Use selectedFontColor
+        val fontColor = selectedFontColor
         val fontFamily = fonts[fontSpinner.selectedItemPosition]
         val bold = boldCb.isChecked
         val shadow = shadowCb.isChecked
         val overlay = overlayCb.isChecked
         val showDate = showDateCb.isChecked
-        val dateFormat = when (dateFormatRg.checkedRadioButtonId) { // Get dateFormat
+        val dateFormat = when (dateFormatRg.checkedRadioButtonId) {
             R.id.date_format_1 -> 1
             else -> 2
         }
-        val overlayTheme = when (overlayThemeRg.checkedRadioButtonId) { // Get overlayTheme
-            R.id.overlay_black -> "black"
-            else -> "white"
+        val overlayTheme = when (overlayThemeRg.checkedRadioButtonId) {
+            R.id.overlay_white -> "white"
+            else -> "black"
         }
         val is12h = timeFormatRg.checkedRadioButtonId == R.id.format_12_hour_radio_button
 
-        // save
         prefs.fontSize = fontSize
-        prefs.fontColor = fontColor // Save selectedFontColor
+        prefs.fontColor = fontColor
         prefs.fontFamily = fontFamily
         prefs.bold = bold
         prefs.shadow = shadow
         prefs.overlay = overlay
-        prefs.overlayTheme = overlayTheme // Save overlayTheme
+        prefs.overlayTheme = overlayTheme
         prefs.is12Hour = is12h
         prefs.showDate = showDate
-        prefs.dateFormat = dateFormat // Save dateFormat
+        prefs.dateFormat = dateFormat
 
-        // update widget immediately
         val mgr = AppWidgetManager.getInstance(this)
         TeluguClockWidget.updateWidget(this, mgr, appWidgetId)
 
-        // return result
         val result = Intent().apply { 
             putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId) 
         }
