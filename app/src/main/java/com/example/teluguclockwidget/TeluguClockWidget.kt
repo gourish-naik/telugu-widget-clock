@@ -31,8 +31,14 @@ class TeluguClockWidget : AppWidgetProvider() {
             val telugu = ClockBitmapRenderer.toTelugu(formatted)
 
             val options = manager.getAppWidgetOptions(appWidgetId)
-            val width = options?.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH) ?: 0
-            val height = options?.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT) ?: 0
+            var width = options?.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH) ?: 0
+            var height = options?.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT) ?: 0
+
+            if (width == 0 || height == 0) {
+                val displayMetrics = context.resources.displayMetrics
+                width = displayMetrics.widthPixels
+                height = (displayMetrics.heightPixels * 0.5f).toInt()
+            }
 
             val bmp = ClockBitmapRenderer.render(
                 context,
