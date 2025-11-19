@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.*
 import android.util.TypedValue
 import androidx.core.content.res.ResourcesCompat
+import java.util.Calendar
 
 object ClockBitmapRenderer {
 
@@ -24,87 +25,103 @@ object ClockBitmapRenderer {
     }
 
     fun render(
-        context: Context,
-        text: String,
-        fontSizeSp: Int,
-        color: Int,
-        bold: Boolean,
-        shadow: Boolean,
-        fontResName: String?,
-        showDate: Boolean
-    ): Bitmap {
-        val res = context.resources
-        val textPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, fontSizeSp.toFloat(), res.displayMetrics)
-        val dateTextPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 14f, res.displayMetrics)
+    context: Context,
+    text: String,
+    fontSizeSp: Int,
+    color: Int,
+    bold: Boolean,
+    shadow: Boolean,
+    fontResName: String?,
+    showDate: Boolean
+): Bitmap {
+    val res = context.resources
+    val textPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, fontSizeSp.toFloat(), res.displayMetrics)
+    val dateTextPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 14f, res.displayMetrics)
 
-        val timePaint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.SUBPIXEL_TEXT_FLAG)
-        timePaint.color = color
-        timePaint.textSize = textPx
-        timePaint.textAlign = Paint.Align.CENTER
+    val timePaint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.SUBPIXEL_TEXT_FLAG)
+    timePaint.color = color
+    timePaint.textSize = textPx
+    timePaint.textAlign = Paint.Align.CENTER
 
-        val datePaint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.SUBPIXEL_TEXT_FLAG)
-        datePaint.color = color
-        datePaint.textSize = dateTextPx
-        datePaint.textAlign = Paint.Align.CENTER
+    val datePaint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.SUBPIXEL_TEXT_FLAG)
+    datePaint.color = color
+    datePaint.textSize = dateTextPx
+    datePaint.textAlign = Paint.Align.CENTER
 
-        // Try load font from res/font by name
-        if (!fontResName.isNullOrBlank()) {
-            val fontId = res.getIdentifier(fontResName, "font", context.packageName)
-            if (fontId != 0) {
-                try {
-                    val tf = ResourcesCompat.getFont(context, fontId)
-                    if (tf != null) {
-                        timePaint.typeface = tf
-                        datePaint.typeface = tf
-                    }
-                } catch (_: Exception) { /* fallback */ }
-            }
+    // load font if provided
+    if (!fontResName.isNullOrBlank()) {
+        val fontId = res.getIdentifier(fontResName, "font", context.packageName)
+        if (fontId != 0) {
+            try {
+                val tf = ResourcesCompat.getFont(context, fontId)
+                if (tf != null) {
+                    timePaint.typeface = tf
+                    datePaint.typeface = tf
+                }
+            } catch (_: Exception) { /* fallback */ }
         }
-
-        if (bold) {
-            val current = timePaint.typeface
-            val boldTypeface = Typeface.create(current ?: Typeface.DEFAULT, Typeface.BOLD)
-            timePaint.typeface = boldTypeface
-            datePaint.typeface = boldTypeface
-        }
-
-        if (shadow) {
-            timePaint.setShadowLayer(6f, 1f, 2f, Color.argb(140, 0, 0, 0))
-            datePaint.setShadowLayer(6f, 1f, 2f, Color.argb(140, 0, 0, 0))
-        }
-
-        val timeBounds = Rect()
-        timePaint.getTextBounds(text, 0, text.length, timeBounds)
-
-        var dateText = ""
-        val dateBounds = Rect()
-        if (showDate) {
-            val cal = java.util.Calendar.getInstance()
-            val day = toTelugu(cal.get(java.util.Calendar.DAY_OF_MONTH).toString())
-            val month = getTeluguMonth(cal.get(java.util.Calendar.MONTH))
-            val year = toTelugu(cal.get(java.util.Calendar.YEAR).toString())
-            dateText = "$day $month $year"
-            datePaint.getTextBounds(dateText, 0, dateText.length, dateBounds)
-        }
-
-        val padding = (textPx * 0.2f).toInt()
-        val totalHeight = timeBounds.height() + if (showDate) dateBounds.height() + padding else 0
-        val bmpW = (timeBounds.width().coerceAtLeast(dateBounds.width()) + padding * 2).coerceAtLeast(1)
-        val bmpH = (totalHeight + padding * 2).coerceAtLeast(1)
-
-        val bmp = Bitmap.createBitmap(bmpW, bmpH, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bmp)
-        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
-
-        val x = bmpW / 2f
-        val timeY = (bmpH - totalHeight) / 2f + timeBounds.height() - timePaint.descent()
-        canvas.drawText(text, x, timeY, timePaint)
-
-        if (showDate) {
-            val dateY = timeY + padding + dateBounds.height() - datePaint.descent()
-            canvas.drawText(dateText, x, dateY, datePaint)
-        }
-
-        return bmp
     }
+
+    if (bold) {
+        timePaint.typeface = Typeface.create(timePaint.typeface ?: Typeface.DEFAULT, Typeface.BOLD)
+        datePaint.typeface = Typeface.create(datePaint.typeface ?: Typeface.DEFAULT, Typeface.BOLD)
+    }
+
+    if (shadow) {
+        timePaint.setShadowLayer(6f, 1f, 2f, Color.argb(140, 0, 0, 0))
+        datePaint.setShadowLayer(6f, 1f, 2f, Color.argb(140, 0, 0, 0))
+    }
+
+    // Build date text if required
+    var dateText = ""
+    if (showDate) {
+        val cal = Calendar.getInstance()
+        val day = toTelugu(cal.get(Calendar.DAY_OF_MONTH).toString())
+        val month = getTeluguMonth(cal.get(Calendar.MONTH))
+        val year = toTelugu(cal.get(Calendar.YEAR).toString())
+        dateText = "$day $month $year"
+    }
+
+    // Measure widths/heights using Paint metrics (more accurate)
+    val timeWidth = timePaint.measureText(text).toInt()
+    val timeMetrics = timePaint.fontMetrics
+    val timeHeight = (timeMetrics.descent - timeMetrics.ascent).toInt()
+
+    var dateWidth = 0
+    var dateHeight = 0
+    if (showDate) {
+        dateWidth = datePaint.measureText(dateText).toInt()
+        val dateMetrics = datePaint.fontMetrics
+        dateHeight = (dateMetrics.descent - dateMetrics.ascent).toInt()
+    }
+
+    val contentWidth = maxOf(timeWidth, dateWidth)
+    val verticalGap = (textPx * 0.15f).toInt()
+    val contentHeight = timeHeight + if (showDate) (verticalGap + dateHeight) else 0
+
+    val padding = (textPx * 0.35f).toInt()
+    val bmpW = (contentWidth + padding * 2).coerceAtLeast(1)
+    val bmpH = (contentHeight + padding * 2).coerceAtLeast(1)
+
+    val bmp = Bitmap.createBitmap(bmpW, bmpH, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bmp)
+    canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
+
+    val cx = bmpW / 2f
+
+    // compute baseline for time so entire block is vertically centered
+    // baseline for time = center - (contentHeight/2) + (timeHeight - (timeMetrics.descent)). The baseline math uses ascent/descent.
+    val timeBaseline = (bmpH / 2f) - (contentHeight / 2f) + (timeHeight - timeMetrics.descent)
+
+    canvas.drawText(text, cx, timeBaseline, timePaint)
+
+    if (showDate) {
+        // date baseline is timeBaseline + timeHeight + verticalGap but adjusted for font descent
+        val dateBaseline = timeBaseline + timeHeight + verticalGap.toFloat()
+        canvas.drawText(dateText, cx, dateBaseline - datePaint.fontMetrics.descent, datePaint)
+    }
+
+    return bmp
+}
+
 }
