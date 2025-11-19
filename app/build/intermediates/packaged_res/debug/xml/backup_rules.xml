@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<full-backup-content>
-    <!-- TODO Remove the following file path from backup when adding real content to your app -->
-    <include
-        domain="sharedpref"
-        path="." />
-</full-backup-content>
