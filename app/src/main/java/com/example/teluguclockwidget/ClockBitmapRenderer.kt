@@ -47,8 +47,9 @@ object ClockBitmapRenderer {
     ): Bitmap {
         val res = context.resources
         
-        val maxWidth = width
-        val maxHeight = height
+        // Ensure we have some minimum dimensions to work with
+        val safeWidth = if (width > 0) width else 400
+        val safeHeight = if (height > 0) height else 200
         
         // Build date text based on format
         var dateText = ""
@@ -74,7 +75,7 @@ object ClockBitmapRenderer {
         val scaledSizes = autoScaleFonts(
             text, dateText, showDate,
             timePaint, datePaint,
-            maxWidth, maxHeight
+            safeWidth, safeHeight
         )
         
         // Apply scaled sizes
@@ -98,18 +99,23 @@ object ClockBitmapRenderer {
         val dateHeight = if (showDate) (dateFontMetrics.descent - dateFontMetrics.ascent) else 0f
         
         val contentWidth = maxOf(timeWidth, dateWidth)
-        val verticalGap = TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP, 8f,
-            context.resources.displayMetrics
-        )
-        val contentHeight = timeHeight + (if (showDate) verticalGap else 0f) + dateHeight
         
-        // Generous padding for overlay
-        val paddingH = (contentWidth * 0.2f).toInt().coerceAtLeast(40)
-        val paddingV = (contentHeight * 0.2f).toInt().coerceAtLeast(30)
+        // Gap between time and date
+        val verticalGap = if (showDate) {
+             TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, 6f, // 6dp gap
+                context.resources.displayMetrics
+            )
+        } else 0f
+
+        val contentHeight = timeHeight + verticalGap + dateHeight
         
-        val bmpW = (contentWidth + paddingH * 2).toInt().coerceAtLeast(200)
-        val bmpH = (contentHeight + paddingV * 2).toInt().coerceAtLeast(120)
+        // Padding for overlay/bitmap
+        val paddingH = (contentWidth * 0.1f).toInt().coerceAtLeast(20)
+        val paddingV = (contentHeight * 0.1f).toInt().coerceAtLeast(20)
+        
+        val bmpW = (contentWidth + paddingH * 2).toInt().coerceAtLeast(safeWidth)
+        val bmpH = (contentHeight + paddingV * 2).toInt().coerceAtLeast(safeHeight)
         
         // Create bitmap
         val bmp = Bitmap.createBitmap(bmpW, bmpH, Bitmap.Config.ARGB_8888)
@@ -135,17 +141,23 @@ object ClockBitmapRenderer {
         val cx = bmpW / 2f
         val cy = bmpH / 2f
         
-        // Calculate vertical center for the entire text block
-        val totalTextHeight = contentHeight
-        val startY = cy - (totalTextHeight / 2f)
-
-        // Draw time centered
-        val timeBaseline = startY - timeFontMetrics.ascent
+        // Calculate vertical start position to center the block
+        // Total block height = timeHeight + gap + dateHeight
+        // We want the center of this block to be at cy
+        val totalBlockHeight = timeHeight + verticalGap + dateHeight
+        val blockTop = cy - (totalBlockHeight / 2f)
+        
+        // Draw time
+        // timeBaseline is blockTop + timeAscent (since ascent is negative) -> wait, drawText y is baseline.
+        // Distance from top of time text to baseline is -ascent.
+        val timeBaseline = blockTop - timeFontMetrics.ascent
         canvas.drawText(text, cx, timeBaseline, timePaint)
 
         // Draw date below time if enabled
         if (showDate) {
-            val dateBaseline = timeBaseline + timeHeight + verticalGap - dateFontMetrics.ascent
+            // Date starts at blockTop + timeHeight + gap
+            val dateTop = blockTop + timeHeight + verticalGap
+            val dateBaseline = dateTop - dateFontMetrics.ascent
             canvas.drawText(dateText, cx, dateBaseline, datePaint)
         }
         
@@ -212,8 +224,11 @@ object ClockBitmapRenderer {
         var timeSize = timePaint.textSize
         var dateSize = datePaint.textSize
         
+        // Safety check
+        if (maxWidth <= 0 || maxHeight <= 0) return Pair(timeSize, dateSize)
+
         var iteration = 0
-        while (iteration < 25) {
+        while (iteration < 30) {
             timePaint.textSize = timeSize
             datePaint.textSize = dateSize
             
@@ -224,28 +239,33 @@ object ClockBitmapRenderer {
             val dateHeight = if (showDate) datePaint.fontMetrics.descent - datePaint.fontMetrics.ascent else 0f
             
             val totalWidth = maxOf(timeWidth, dateWidth)
-            val verticalGap = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, 8f,
-                android.content.res.Resources.getSystem().displayMetrics
-            )
-            val totalHeight = timeHeight + (if (showDate) verticalGap else 0f) + dateHeight
             
-            if (totalWidth <= maxWidth && totalHeight <= maxHeight) {
+            val verticalGap = if (showDate) {
+                 TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP, 6f,
+                    android.content.res.Resources.getSystem().displayMetrics
+                )
+            } else 0f
+            
+            val totalHeight = timeHeight + verticalGap + dateHeight
+            
+            // Check if it fits with some padding (10%)
+            if (totalWidth <= (maxWidth * 0.9f) && totalHeight <= (maxHeight * 0.9f)) {
                 break
             }
             
-            timeSize *= 0.98f
-            dateSize *= 0.98f
+            timeSize *= 0.95f
+            dateSize *= 0.95f
             iteration++
         }
         
         // Minimum sizes
         val minTimeSize = TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_SP, 28f,
+            TypedValue.COMPLEX_UNIT_SP, 20f,
             android.content.res.Resources.getSystem().displayMetrics
         )
         val minDateSize = TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_SP, 14f,
+            TypedValue.COMPLEX_UNIT_SP, 10f,
             android.content.res.Resources.getSystem().displayMetrics
         )
         

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="#F5F5F5"
     android:fillViewport="true">
 
     <LinearLayout
@@ -11,262 +12,306 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Live Preview -->
-        <TextView
+        <!-- Preview Section -->
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="8dp"
-            android:text="Live Preview"
-            android:textColor="@android:color/black"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@android:color/white">
 
-        <FrameLayout
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Preview"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#333333"
+                    android:layout_marginBottom="12dp"/>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:background="#E0E0E0">
+                    
+                    <ImageView
+                        android:id="@+id/preview_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitCenter"
+                        android:contentDescription="Widget Preview" />
+                        
+                </FrameLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Appearance Settings -->
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="220dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@android:color/white">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Appearance"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#333333"
+                    android:layout_marginBottom="12dp"/>
+
+                <!-- Font Family -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
+                    
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Font Family"
+                        android:textColor="#555555"/>
+                        
+                    <Spinner
+                        android:id="@+id/font_family_spinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minWidth="150dp"/>
+                </LinearLayout>
+
+                <!-- Font Size -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Font Size (sp)"
+                        android:textColor="#555555"/>
+
+                    <EditText
+                        android:id="@+id/font_size_edit_text"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:text="60"
+                        android:textColor="#333333"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <!-- Font Color -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Font Color"
+                        android:textColor="#555555"/>
+
+                    <View
+                        android:id="@+id/color_preview"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginEnd="12dp"
+                        android:background="@android:color/white"/>
+
+                    <Button
+                        android:id="@+id/color_picker_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Pick Color"
+                        android:backgroundTint="#2196F3"
+                        android:textColor="@android:color/white"/>
+                </LinearLayout>
+
+                <!-- Toggles -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="8dp">
+                    
+                    <CheckBox
+                        android:id="@+id/font_bold_checkbox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Bold"
+                        android:textColor="#555555"
+                        android:layout_marginEnd="16dp"/>
+                        
+                    <CheckBox
+                        android:id="@+id/show_text_shadow_checkbox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Shadow"
+                        android:textColor="#555555"/>
+                </LinearLayout>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Display Settings -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:background="@drawable/rounded_background"
-            android:padding="16dp">
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@android:color/white">
 
-            <ImageView
-                android:id="@+id/preview_image"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:adjustViewBounds="true"
-                android:contentDescription="Clock Preview"
-                android:scaleType="fitCenter" />
-        </FrameLayout>
-
-        <!-- Settings -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="12dp"
-            android:text="Customize Widget"
-            android:textColor="@android:color/black"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <!-- Font Size -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Base font size"
-            android:textColor="@android:color/black"
-            android:textSize="14sp" />
-
-        <EditText
-            android:id="@+id/font_size_edit_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:backgroundTint="@android:color/darker_gray"
-            android:hint="56"
-            android:inputType="number"
-            android:textColor="@android:color/black"
-            android:textColorHint="#888888" />
-
-        <!-- Font Color with Color Picker -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Font color"
-            android:textColor="@android:color/black"
-            android:textSize="14sp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/color_picker_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_weight="1"
-                android:backgroundTint="@android:color/darker_gray"
-                android:text="Pick Color"
-                android:textColor="@android:color/black" />
-
-            <View
-                android:id="@+id/color_preview"
-                android:layout_width="60dp"
-                android:layout_height="48dp"
-                android:layout_gravity="center_vertical"
-                android:background="@android:color/white" />
-        </LinearLayout>
-
-        <!-- Font Family -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Font family"
-            android:textColor="@android:color/black"
-            android:textSize="14sp" />
-
-        <Spinner
-            android:id="@+id/font_family_spinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android.backgroundTint="@android:color/darker_gray"
-            android:minHeight="48dp" />
-
-        <!-- Checkboxes -->
-        <CheckBox
-            android:id="@+id/font_bold_checkbox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:buttonTint="@android:color/black"
-            android:text="Bold text"
-            android:textColor="@android:color/black" />
-
-        <CheckBox
-            android:id="@+id/show_text_shadow_checkbox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:buttonTint="@android:color/black"
-            android:checked="true"
-            android:text="Text shadow"
-            android:textColor="@android:color/black" />
-
-        <!-- Date Options -->
-        <CheckBox
-            android:id="@+id/show_date_checkbox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:buttonTint="@android:color/black"
-            android:text="Show date below time"
-            android:textColor="@android:color/black" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            android:text="Date format"
-            android:textColor="@android:color/black"
-            android:textSize="14sp" />
-
-        <RadioGroup
-            android:id="@+id/date_format_radio_group"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp">
-
-            <RadioButton
-                android:id="@+id/date_format_1"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:buttonTint="@android:color/black"
-                android:checked="true"
-                android:text="Day, Date, Month (ఆది ౧౫ జనవరి)"
-                android:textColor="@android:color/black" />
+                android:orientation="vertical"
+                android:padding="16dp">
 
-            <RadioButton
-                android:id="@+id/date_format_2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:buttonTint="@android:color/black"
-                android:text="Date - Month - Year (౧౫ - జనవరి - ౨౦౨౫)"
-                android:textColor="@android:color/black" />
-        </RadioGroup>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Display Options"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#333333"
+                    android:layout_marginBottom="12dp"/>
 
-        <!-- Overlay Options -->
-        <CheckBox
-            android:id="@+id/show_background_overlay_checkbox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:buttonTint="@android:color/black"
-            android:text="Show background overlay"
-            android:textColor="@android:color/black" />
+                <!-- Time Format -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Time Format"
+                    android:textColor="#555555"
+                    android:layout_marginBottom="4dp"/>
+                    
+                <RadioGroup
+                    android:id="@+id/time_format_radio_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="12dp">
+                    
+                    <RadioButton
+                        android:id="@+id/format_12_hour_radio_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="12 Hour"
+                        android:textColor="#555555"
+                        android:layout_marginEnd="16dp"/>
+                        
+                    <RadioButton
+                        android:id="@+id/format_24_hour_radio_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="24 Hour"
+                        android:textColor="#555555"/>
+                </RadioGroup>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            android:text="Overlay theme (50% transparency)"
-            android:textColor="@android:color/black"
-            android:textSize="14sp" />
+                <!-- Date Settings -->
+                <CheckBox
+                    android:id="@+id/show_date_checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Show Date"
+                    android:textColor="#555555"
+                    android:layout_marginBottom="4dp"/>
 
-        <RadioGroup
-            android:id="@+id/overlay_theme_radio_group"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:orientation="horizontal">
+                <RadioGroup
+                    android:id="@+id/date_format_radio_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="12dp"
+                    android:paddingStart="8dp">
 
-            <RadioButton
-                android:id="@+id/overlay_black"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:buttonTint="@android:color/black"
-                android:checked="true"
-                android:text="Black"
-                android:textColor="@android:color/black" />
+                    <RadioButton
+                        android:id="@+id/date_format_1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Day Date Month"
+                        android:textColor="#555555"/>
 
-            <RadioButton
-                android:id="@+id/overlay_white"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:buttonTint="@android:color/black"
-                android:text="White"
-                android:textColor="@android:color/black" />
-        </RadioGroup>
+                    <RadioButton
+                        android:id="@+id/date_format_2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="DD - MM - YYYY"
+                        android:textColor="#555555"/>
+                </RadioGroup>
 
-        <!-- Time Format -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            android:text="Time format"
-            android:textColor="@android:color/black"
-            android:textSize="14sp" />
+                <!-- Overlay Settings -->
+                <CheckBox
+                    android:id="@+id/show_background_overlay_checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Show Background Overlay"
+                    android:textColor="#555555"
+                    android:layout_marginBottom="4dp"/>
 
-        <RadioGroup
-            android:id="@+id/time_format_radio_group"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:orientation="horizontal">
+                <RadioGroup
+                    android:id="@+id/overlay_theme_radio_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingStart="8dp">
 
-            <RadioButton
-                android:id="@+id/format_12_hour_radio_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:buttonTint="@android:color/black"
-                android:checked="true"
-                android:text="12-hour"
-                android:textColor="@android:color/black" />
+                    <RadioButton
+                        android:id="@+id/overlay_black"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Dark"
+                        android:textColor="#555555"
+                        android:layout_marginEnd="16dp"/>
 
-            <RadioButton
-                android:id="@+id/format_24_hour_radio_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:buttonTint="@android:color/black"
-                android:text="24-hour"
-                android:textColor="@android:color/black" />
-        </RadioGroup>
+                    <RadioButton
+                        android:id="@+id/overlay_white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Light"
+                        android:textColor="#555555"/>
+                </RadioGroup>
 
-        <!-- Save Button -->
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
         <Button
             android:id="@+id/save_button"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="16dp"
-            android:backgroundTint="@android:color/darker_gray"
-            android:text="Save Widget"
-            android:textColor="@android:color/black"
-            android:textSize="16sp" />
+            android:layout_height="56dp"
+            android:text="Add Widget"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:backgroundTint="#4CAF50"
+            android:textColor="@android:color/white"
+            app:cornerRadius="28dp"/>
 
     </LinearLayout>
 </ScrollView>

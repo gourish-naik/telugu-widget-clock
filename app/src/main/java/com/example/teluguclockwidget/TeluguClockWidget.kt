@@ -1,5 +1,5 @@
-import android.graphics.Color
-import android.graphics.PorterDuff
+package com.example.teluguclockwidget
+
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
@@ -9,10 +9,6 @@ import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
 import java.util.Calendar
-import com.example.teluguclockwidget.WidgetPrefs
-import com.example.teluguclockwidget.ClockBitmapRenderer
-import com.example.teluguclockwidget.R
-import com.example.teluguclockwidget.TeluguClockWidgetConfigureActivity
 
 class TeluguClockWidget : AppWidgetProvider() {
 
@@ -20,88 +16,93 @@ class TeluguClockWidget : AppWidgetProvider() {
         const val ACTION_AUTO_UPDATE = "com.example.teluguclockwidget.ACTION_AUTO_UPDATE"
 
         fun updateWidget(context: Context, manager: AppWidgetManager, appWidgetId: Int) {
-            val prefs = WidgetPrefs(context, appWidgetId)
+            try {
+                val prefs = WidgetPrefs(context, appWidgetId)
 
-            val cal = Calendar.getInstance()
-            var hour = if (prefs.is12Hour) cal.get(Calendar.HOUR) else cal.get(Calendar.HOUR_OF_DAY)
-            if (prefs.is12Hour && hour == 0) hour = 12
-            val minute = cal.get(Calendar.MINUTE)
+                val cal = Calendar.getInstance()
+                var hour = if (prefs.is12Hour) cal.get(Calendar.HOUR) else cal.get(Calendar.HOUR_OF_DAY)
+                if (prefs.is12Hour && hour == 0) hour = 12
+                val minute = cal.get(Calendar.MINUTE)
 
-            val formatted = String.format("%02d:%02d", hour, minute)
-            val telugu = ClockBitmapRenderer.toTelugu(formatted)
+                val formatted = String.format("%02d:%02d", hour, minute)
+                val telugu = ClockBitmapRenderer.toTelugu(formatted)
 
-            val options = manager.getAppWidgetOptions(appWidgetId)
-            var width = options?.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH) ?: 0
-            var height = options?.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT) ?: 0
+                val options = manager.getAppWidgetOptions(appWidgetId)
+                var width = options?.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH) ?: 0
+                var height = options?.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT) ?: 0
 
-            if (width == 0 || height == 0) {
-                val displayMetrics = context.resources.displayMetrics
-                width = displayMetrics.widthPixels
-                height = (displayMetrics.heightPixels * 0.5f).toInt()
+                if (width <= 0 || height <= 0) {
+                    val displayMetrics = context.resources.displayMetrics
+                    width = displayMetrics.widthPixels
+                    height = (displayMetrics.heightPixels * 0.5f).toInt()
+                }
+
+                val bmp = ClockBitmapRenderer.render(
+                    context,
+                    telugu,
+                    prefs.fontSize,
+                    prefs.fontColor,
+                    prefs.bold,
+                    prefs.shadow,
+                    prefs.fontFamily,
+                    prefs.showDate,
+                    prefs.dateFormat,
+                    prefs.overlay, // Pass overlay preference
+                    prefs.overlayTheme, // Pass overlay theme
+                    width,
+                    height
+                )
+
+                val views = RemoteViews(context.packageName, R.layout.widget_clock)
+                views.setImageViewBitmap(R.id.clock_bitmap, bmp)
+
+                val intent = Intent(context, TeluguClockWidgetConfigureActivity::class.java).apply {
+                    putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+                }
+                val pi = PendingIntent.getActivity(
+                    context,
+                    appWidgetId,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
+                views.setOnClickPendingIntent(R.id.clock_bitmap, pi)
+
+                manager.updateAppWidget(appWidgetId, views)
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-
-            val bmp = ClockBitmapRenderer.render(
-                context,
-                telugu,
-                prefs.fontSize,
-                prefs.fontColor,
-                prefs.bold,
-                prefs.shadow,
-                prefs.fontFamily,
-                prefs.showDate,
-                prefs.dateFormat,
-                prefs.overlay, // Pass overlay preference
-                prefs.overlayTheme, // Pass overlay theme
-                width,
-                height
-            )
-
-            val views = RemoteViews(context.packageName, R.layout.widget_clock)
-            views.setImageViewBitmap(R.id.clock_bitmap, bmp)
-
-            // Set visibility of bg_overlay based on prefs.overlay
-            views.setViewVisibility(
-                R.id.bg_overlay,
-                if (prefs.overlay) android.view.View.VISIBLE else android.view.View.GONE
-            )
-
-            val intent = Intent(context, TeluguClockWidgetConfigureActivity::class.java).apply {
-                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-            }
-            val pi = PendingIntent.getActivity(
-                context,
-                appWidgetId,
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
-            views.setOnClickPendingIntent(R.id.clock_bitmap, pi)
-
-            manager.updateAppWidget(appWidgetId, views)
         }
 
         private fun scheduleNextUpdate(context: Context) {
-            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
-            if (alarmManager == null) return
+            try {
+                val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
+                if (alarmManager == null) return
 
-            val intent = Intent(context, TeluguClockWidget::class.java).apply {
-                action = ACTION_AUTO_UPDATE
+                val intent = Intent(context, TeluguClockWidget::class.java).apply {
+                    action = ACTION_AUTO_UPDATE
+                }
+                val pendingIntent = PendingIntent.getBroadcast(
+                    context, 
+                    0, 
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
+
+                // Calculate EXACT next minute boundary (no delay)
+                val now = System.currentTimeMillis()
+                val nextMinuteMillis = now - (now % 60000) + 60000
+
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    nextMinuteMillis,
+                    pendingIntent
+                )
+            } catch (e: SecurityException) {
+                // Permission not granted on Android 12+, fall back to inexact alarm
+                e.printStackTrace()
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-            val pendingIntent = PendingIntent.getBroadcast(
-                context, 
-                0, 
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
-
-            // Calculate EXACT next minute boundary (no delay)
-            val now = System.currentTimeMillis()
-            val nextMinuteMillis = now - (now % 60000) + 60000
-
-            alarmManager.setExactAndAllowWhileIdle(
-                AlarmManager.RTC_WAKEUP,
-                nextMinuteMillis,
-                pendingIntent
-            )
         }
 
         fun cancelUpdates(context: Context) {

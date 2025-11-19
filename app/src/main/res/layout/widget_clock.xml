@@ -4,24 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:padding="8dp">
+    android:padding="0dp">
 
-    <!-- Optional rounded overlay behind the bitmap (use wrap_content so it follows the bitmap) -->
-    <ImageView
-        android:id="@+id/bg_overlay"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/rounded_overlay"
-        android:visibility="gone"
-        android:contentDescription="@null" />
-
-    <!-- The rendered clock bitmap (wrap_content so it does not stretch) -->
+    <!-- Single ImageView - overlay is drawn directly on bitmap -->
     <ImageView
         android:id="@+id/clock_bitmap"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
         android:adjustViewBounds="true"
-        android:scaleType="centerInside"
+        android:scaleType="fitCenter"
         android:contentDescription="@string/clock" />
 
 </FrameLayout>
