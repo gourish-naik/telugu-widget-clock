@@ -30,6 +30,10 @@ class TeluguClockWidget : AppWidgetProvider() {
             val formatted = String.format("%02d:%02d", hour, minute)
             val telugu = ClockBitmapRenderer.toTelugu(formatted)
 
+            val options = manager.getAppWidgetOptions(appWidgetId)
+            val width = options?.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH) ?: 0
+            val height = options?.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT) ?: 0
+
             val bmp = ClockBitmapRenderer.render(
                 context,
                 telugu,
@@ -41,7 +45,9 @@ class TeluguClockWidget : AppWidgetProvider() {
                 prefs.showDate,
                 prefs.dateFormat,
                 prefs.overlay, // Pass overlay preference
-                prefs.overlayTheme // Pass overlay theme
+                prefs.overlayTheme, // Pass overlay theme
+                width,
+                height
             )
 
             val views = RemoteViews(context.packageName, R.layout.widget_clock)

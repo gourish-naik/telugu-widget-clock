@@ -41,14 +41,14 @@ object ClockBitmapRenderer {
         showDate: Boolean,
         dateFormat: Int = 1, // 1 or 2
         showOverlay: Boolean = false,
-        overlayTheme: String = "black" // "black" or "white"
+        overlayTheme: String = "black", // "black" or "white"
+        width: Int,
+        height: Int
     ): Bitmap {
         val res = context.resources
-        val displayMetrics = res.displayMetrics
         
-        // Use larger canvas for expanded widgets
-        val maxWidth = displayMetrics.widthPixels
-        val maxHeight = (displayMetrics.heightPixels * 0.5f).toInt()
+        val maxWidth = width
+        val maxHeight = height
         
         // Build date text based on format
         var dateText = ""

@@ -211,6 +211,10 @@ class TeluguClockWidgetConfigureActivity : AppCompatActivity() {
 
     private fun updatePreview() {
         try {
+            if (previewImage.width == 0 || previewImage.height == 0) {
+                previewImage.post { updatePreview() }
+                return
+            }
             // Get current settings
             val prefs = WidgetPrefs(this, appWidgetId)
             val fontSize = fontSizeEt.text.toString().toIntOrNull() ?: prefs.fontSize
@@ -224,6 +228,11 @@ class TeluguClockWidgetConfigureActivity : AppCompatActivity() {
                 else -> 2
             }
             val is12h = timeFormatRg.checkedRadioButtonId == R.id.format_12_hour_radio_button
+            val showOverlay = overlayCb.isChecked
+            val overlayTheme = when (overlayThemeRg.checkedRadioButtonId) {
+                R.id.overlay_black -> "black"
+                else -> "white"
+            }
 
             // Generate preview time
             val cal = Calendar.getInstance()
@@ -244,7 +253,11 @@ class TeluguClockWidgetConfigureActivity : AppCompatActivity() {
                 shadow,
                 fontFamily,
                 showDate,
-                dateFormat // Pass dateFormat
+                dateFormat, // Pass dateFormat
+                showOverlay,
+                overlayTheme,
+                previewImage.width,
+                previewImage.height
             )
 
             // Set preview image

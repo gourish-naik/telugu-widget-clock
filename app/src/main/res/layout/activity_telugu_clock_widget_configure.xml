@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1E1E1E"
+    android:background="@android:color/white"
     android:fillViewport="true">
 
     <LinearLayout
@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:paddingBottom="8dp"
             android:text="Live Preview"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:paddingBottom="12dp"
             android:text="Customize Widget"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -53,7 +53,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Base font size"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:textSize="14sp" />
 
         <EditText
@@ -61,18 +61,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:backgroundTint="@android:color/white"
+            android:backgroundTint="@android:color/darker_gray"
             android:hint="56"
             android:inputType="number"
-            android:textColor="@android:color/white"
-            android:textColorHint="#CCCCCC" />
+            android:textColor="@android:color/black"
+            android:textColorHint="#888888" />
 
         <!-- Font Color with Color Picker -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Font color"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:textSize="14sp" />
 
         <LinearLayout
@@ -87,7 +87,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:backgroundTint="#f5d8a1"
+                android:backgroundTint="@android:color/darker_gray"
                 android:text="Pick Color"
                 android:textColor="@android:color/black" />
 
@@ -104,7 +104,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Font family"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:textSize="14sp" />
 
         <Spinner
@@ -112,7 +112,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:backgroundTint="@android:color/white"
+            android.backgroundTint="@android:color/darker_gray"
             android:minHeight="48dp" />
 
         <!-- Checkboxes -->
@@ -120,18 +120,18 @@
             android:id="@+id/font_bold_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:buttonTint="@android:color/white"
+            android:buttonTint="@android:color/black"
             android:text="Bold text"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/black" />
 
         <CheckBox
             android:id="@+id/show_text_shadow_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:buttonTint="@android:color/white"
+            android:buttonTint="@android:color/black"
             android:checked="true"
             android:text="Text shadow"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/black" />
 
         <!-- Date Options -->
         <CheckBox
@@ -139,16 +139,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:buttonTint="@android:color/white"
+            android:buttonTint="@android:color/black"
             android:text="Show date below time"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/black" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="8dp"
             android:text="Date format"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:textSize="14sp" />
 
         <RadioGroup
@@ -161,18 +161,18 @@
                 android:id="@+id/date_format_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:buttonTint="@android:color/white"
+                android:buttonTint="@android:color/black"
                 android:checked="true"
                 android:text="Day, Date, Month (ఆది ౧౫ జనవరి)"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/black" />
 
             <RadioButton
                 android:id="@+id/date_format_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:buttonTint="@android:color/white"
+                android:buttonTint="@android:color/black"
                 android:text="Date - Month - Year (౧౫ - జనవరి - ౨౦౨౫)"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/black" />
         </RadioGroup>
 
         <!-- Overlay Options -->
@@ -181,16 +181,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:buttonTint="@android:color/white"
+            android:buttonTint="@android:color/black"
             android:text="Show background overlay"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/black" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="8dp"
             android:text="Overlay theme (50% transparency)"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:textSize="14sp" />
 
         <RadioGroup
@@ -205,19 +205,19 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:buttonTint="@android:color/white"
+                android:buttonTint="@android:color/black"
                 android:checked="true"
                 android:text="Black"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/black" />
 
             <RadioButton
                 android:id="@+id/overlay_white"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:buttonTint="@android:color/white"
+                android:buttonTint="@android:color/black"
                 android:text="White"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/black" />
         </RadioGroup>
 
         <!-- Time Format -->
@@ -226,7 +226,7 @@
             android:layout_height="wrap_content"
             android:paddingTop="8dp"
             android:text="Time format"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:textSize="14sp" />
 
         <RadioGroup
@@ -241,19 +241,19 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:buttonTint="@android:color/white"
+                android:buttonTint="@android:color/black"
                 android:checked="true"
                 android:text="12-hour"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/black" />
 
             <RadioButton
                 android:id="@+id/format_24_hour_radio_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:buttonTint="@android:color/white"
+                android:buttonTint="@android:color/black"
                 android:text="24-hour"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/black" />
         </RadioGroup>
 
         <!-- Save Button -->
@@ -263,7 +263,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="16dp"
-            android:backgroundTint="#f5d8a1"
+            android:backgroundTint="@android:color/darker_gray"
             android:text="Save Widget"
             android:textColor="@android:color/black"
             android:textSize="16sp" />
