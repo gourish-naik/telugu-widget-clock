@@ -7,7 +7,7 @@
     android:padding="8dp">
 
     <!-- Optional rounded overlay behind the bitmap (use wrap_content so it follows the bitmap) -->
-    <View
+    <ImageView
         android:id="@+id/bg_overlay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

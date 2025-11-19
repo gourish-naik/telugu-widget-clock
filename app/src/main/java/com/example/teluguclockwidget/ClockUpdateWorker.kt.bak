@@ -3,19 +3,18 @@ package com.example.teluguclockwidget
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
+import android.content.Intent // Added import
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import com.example.teluguclockwidget.TeluguClockWidget // Explicit import
 
 class ClockUpdateWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
 
     override fun doWork(): Result {
-        val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
-        val appWidgetIds = appWidgetManager.getAppWidgetIds(
-            ComponentName(applicationContext, TeluguClockWidget::class.java)
-        )
-        for (appWidgetId in appWidgetIds) {
-            TeluguClockWidget.updateWidget(applicationContext, appWidgetManager, appWidgetId)
+        val intent = Intent(applicationContext, TeluguClockWidget::class.java).apply {
+            action = TeluguClockWidget.ACTION_AUTO_UPDATE
         }
+        applicationContext.sendBroadcast(intent)
         return Result.success()
     }
 }

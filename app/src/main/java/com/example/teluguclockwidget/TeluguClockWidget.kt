@@ -1,5 +1,6 @@
-package com.example.teluguclockwidget
-
+import android.graphics.Color
+import android.graphics.PorterDuff
+import android.app.AlarmManager
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
@@ -7,11 +8,11 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
 import java.util.Calendar
-import java.util.concurrent.TimeUnit
+import com.example.teluguclockwidget.WidgetPrefs
+import com.example.teluguclockwidget.ClockBitmapRenderer
+import com.example.teluguclockwidget.R
+import com.example.teluguclockwidget.TeluguClockWidgetConfigureActivity
 
 class TeluguClockWidget : AppWidgetProvider() {
 
@@ -37,12 +38,16 @@ class TeluguClockWidget : AppWidgetProvider() {
                 prefs.bold,
                 prefs.shadow,
                 prefs.fontFamily,
-                prefs.showDate
+                prefs.showDate,
+                prefs.dateFormat,
+                prefs.overlay, // Pass overlay preference
+                prefs.overlayTheme // Pass overlay theme
             )
 
             val views = RemoteViews(context.packageName, R.layout.widget_clock)
             views.setImageViewBitmap(R.id.clock_bitmap, bmp)
 
+            // Set visibility of bg_overlay based on prefs.overlay
             views.setViewVisibility(
                 R.id.bg_overlay,
                 if (prefs.overlay) android.view.View.VISIBLE else android.view.View.GONE
@@ -61,24 +66,95 @@ class TeluguClockWidget : AppWidgetProvider() {
 
             manager.updateAppWidget(appWidgetId, views)
         }
+
+        private fun scheduleNextUpdate(context: Context) {
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
+            if (alarmManager == null) return
+
+            val intent = Intent(context, TeluguClockWidget::class.java).apply {
+                action = ACTION_AUTO_UPDATE
+            }
+            val pendingIntent = PendingIntent.getBroadcast(
+                context, 
+                0, 
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+
+            // Calculate EXACT next minute boundary (no delay)
+            val now = Calendar.getInstance()
+            val nextMinute = Calendar.getInstance().apply {
+                add(Calendar.MINUTE, 1)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0) // Set to 0 for exact minute
+            }
+            val delayMillis = nextMinute.timeInMillis - now.timeInMillis
+
+            alarmManager.setAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                System.currentTimeMillis() + delayMillis,
+                pendingIntent
+            )
+        }
+
+        fun cancelUpdates(context: Context) {
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
+            val intent = Intent(context, TeluguClockWidget::class.java).apply {
+                action = ACTION_AUTO_UPDATE
+            }
+            val pendingIntent = PendingIntent.getBroadcast(
+                context, 
+                0, 
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            alarmManager?.cancel(pendingIntent)
+        }
     }
 
     override fun onUpdate(context: Context, manager: AppWidgetManager, appWidgetIds: IntArray) {
         for (id in appWidgetIds) {
             updateWidget(context, manager, id)
         }
-        // Schedule WorkManager task for periodic updates
-        val workRequest = PeriodicWorkRequestBuilder<ClockUpdateWorker>(15, TimeUnit.MINUTES)
-            .build()
-        WorkManager.getInstance(context).enqueueUniquePeriodicWork(
-            "TeluguClockWidgetUpdate",
-            ExistingPeriodicWorkPolicy.UPDATE,
-            workRequest
-        )
+        scheduleNextUpdate(context)
     }
 
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
-        // WorkManager will handle periodic updates, no need for ACTION_AUTO_UPDATE here
+        
+        when (intent.action) {
+            ACTION_AUTO_UPDATE -> {
+                val manager = AppWidgetManager.getInstance(context)
+                val ids = manager.getAppWidgetIds(ComponentName(context, TeluguClockWidget::class.java))
+                
+                if (ids.isNotEmpty()) {
+                    for (id in ids) {
+                        updateWidget(context, manager, id)
+                    }
+                    scheduleNextUpdate(context)
+                }
+            }
+            Intent.ACTION_TIME_CHANGED,
+            Intent.ACTION_TIMEZONE_CHANGED,
+            Intent.ACTION_TIME_TICK,
+            Intent.ACTION_BOOT_COMPLETED -> {
+                val manager = AppWidgetManager.getInstance(context)
+                val ids = manager.getAppWidgetIds(ComponentName(context, TeluguClockWidget::class.java))
+                for (id in ids) {
+                    updateWidget(context, manager, id)
+                }
+                scheduleNextUpdate(context)
+            }
+        }
+    }
+
+    override fun onEnabled(context: Context) {
+        super.onEnabled(context)
+        scheduleNextUpdate(context)
+    }
+
+    override fun onDisabled(context: Context) {
+        super.onDisabled(context)
+        cancelUpdates(context)
     }
 }
