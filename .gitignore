@@ -1,5 +1,31 @@
-# Gradle and IDE artifacts
-.gradle
-/build/
-*/build/
+# Gradle
+.gradle/
+**/build/
+build/
+
+# Gradle Wrapper caches
 gradle/wrapper/dists/
+gradle/wrapper/gradle-wrapper.jar
+gradle/wrapper/gradle-wrapper.properties
+
+# APKs / AAB / output files
+*.apk
+*.apks
+*.aab
+*.aar
+
+# Android Studio / IntelliJ
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local configuration files
+local.properties
+
+# Kotlin build cache
+.kotlinc/
