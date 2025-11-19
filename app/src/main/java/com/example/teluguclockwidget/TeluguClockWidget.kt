@@ -82,17 +82,12 @@ class TeluguClockWidget : AppWidgetProvider() {
             )
 
             // Calculate EXACT next minute boundary (no delay)
-            val now = Calendar.getInstance()
-            val nextMinute = Calendar.getInstance().apply {
-                add(Calendar.MINUTE, 1)
-                set(Calendar.SECOND, 0)
-                set(Calendar.MILLISECOND, 0) // Set to 0 for exact minute
-            }
-            val delayMillis = nextMinute.timeInMillis - now.timeInMillis
+            val now = System.currentTimeMillis()
+            val nextMinuteMillis = now - (now % 60000) + 60000
 
-            alarmManager.setAndAllowWhileIdle(
+            alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
-                System.currentTimeMillis() + delayMillis,
+                nextMinuteMillis,
                 pendingIntent
             )
         }
