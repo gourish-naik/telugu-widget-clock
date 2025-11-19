@@ -3,21 +3,14 @@ package com.example.teluguclockwidget
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
 import java.util.Calendar
-import java.util.concurrent.TimeUnit
 
 class TeluguClockWidget : AppWidgetProvider() {
 
     companion object {
-        const val ACTION_AUTO_UPDATE = "com.example.teluguclockwidget.ACTION_AUTO_UPDATE"
-
         fun updateWidget(context: Context, manager: AppWidgetManager, appWidgetId: Int) {
             val prefs = WidgetPrefs(context, appWidgetId)
 
@@ -26,27 +19,24 @@ class TeluguClockWidget : AppWidgetProvider() {
             if (prefs.is12Hour && hour == 0) hour = 12
             val minute = cal.get(Calendar.MINUTE)
 
-            val formatted = String.format("%02d:%02d", hour, minute)
-            val telugu = ClockBitmapRenderer.toTelugu(formatted)
-
-            val bmp = ClockBitmapRenderer.render(
-                context,
-                telugu,
-                prefs.fontSize,
-                prefs.fontColor,
-                prefs.bold,
-                prefs.shadow,
-                prefs.fontFamily,
-                prefs.showDate
-            )
+            val timeText = String.format("%02d:%02d", hour, minute)
+            val teluguTime = TeluguStrings.toTelugu(timeText)
 
             val views = RemoteViews(context.packageName, R.layout.widget_clock)
-            views.setImageViewBitmap(R.id.clock_bitmap, bmp)
+            views.setTextViewText(R.id.time_text, teluguTime)
+            views.setTextColor(R.id.time_text, prefs.fontColor)
+            views.setTextViewTextSize(R.id.time_text, android.util.TypedValue.COMPLEX_UNIT_SP, prefs.fontSize.toFloat())
 
-            views.setViewVisibility(
-                R.id.bg_overlay,
-                if (prefs.overlay) android.view.View.VISIBLE else android.view.View.GONE
-            )
+            if (prefs.showDate) {
+                val day = TeluguStrings.toTelugu(cal.get(Calendar.DAY_OF_MONTH).toString())
+                val month = TeluguStrings.teluguMonths[cal.get(Calendar.MONTH)]
+                val year = TeluguStrings.toTelugu(cal.get(Calendar.YEAR).toString())
+                val dateText = "$day $month $year"
+                views.setTextViewText(R.id.date_text, dateText)
+                views.setViewVisibility(R.id.date_text, android.view.View.VISIBLE)
+            } else {
+                views.setViewVisibility(R.id.date_text, android.view.View.GONE)
+            }
 
             val intent = Intent(context, TeluguClockWidgetConfigureActivity::class.java).apply {
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
@@ -57,7 +47,7 @@ class TeluguClockWidget : AppWidgetProvider() {
                 intent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
-            views.setOnClickPendingIntent(R.id.clock_bitmap, pi)
+            views.setOnClickPendingIntent(R.id.clock_container, pi)
 
             manager.updateAppWidget(appWidgetId, views)
         }
@@ -67,18 +57,15 @@ class TeluguClockWidget : AppWidgetProvider() {
         for (id in appWidgetIds) {
             updateWidget(context, manager, id)
         }
-        // Schedule WorkManager task for periodic updates
-        val workRequest = PeriodicWorkRequestBuilder<ClockUpdateWorker>(15, TimeUnit.MINUTES)
-            .build()
-        WorkManager.getInstance(context).enqueueUniquePeriodicWork(
-            "TeluguClockWidgetUpdate",
-            ExistingPeriodicWorkPolicy.UPDATE,
-            workRequest
-        )
     }
 
-    override fun onReceive(context: Context, intent: Intent) {
-        super.onReceive(context, intent)
-        // WorkManager will handle periodic updates, no need for ACTION_AUTO_UPDATE here
+    override fun onEnabled(context: Context) {
+        super.onEnabled(context)
+        context.startService(Intent(context, ClockTickService::class.java))
+    }
+
+    override fun onDisabled(context: Context) {
+        super.onDisabled(context)
+        context.stopService(Intent(context, ClockTickService::class.java))
     }
 }
