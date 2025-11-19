@@ -98,8 +98,11 @@ object ClockBitmapRenderer {
         val dateHeight = if (showDate) (dateFontMetrics.descent - dateFontMetrics.ascent) else 0f
         
         val contentWidth = maxOf(timeWidth, dateWidth)
-        val verticalGap = if (showDate) (timeHeight * 0.2f) else 0f
-        val contentHeight = timeHeight + verticalGap + dateHeight
+        val verticalGap = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP, 8f,
+            context.resources.displayMetrics
+        )
+        val contentHeight = timeHeight + (if (showDate) verticalGap else 0f) + dateHeight
         
         // Generous padding for overlay
         val paddingH = (contentWidth * 0.2f).toInt().coerceAtLeast(40)
@@ -133,7 +136,7 @@ object ClockBitmapRenderer {
         val cy = bmpH / 2f
         
         // Calculate vertical center for the entire text block
-        val totalTextHeight = timeHeight + verticalGap + dateHeight
+        val totalTextHeight = contentHeight
         val startY = cy - (totalTextHeight / 2f)
 
         // Draw time centered
@@ -221,21 +224,18 @@ object ClockBitmapRenderer {
             val dateHeight = if (showDate) datePaint.fontMetrics.descent - datePaint.fontMetrics.ascent else 0f
             
             val totalWidth = maxOf(timeWidth, dateWidth)
-            val verticalGap = if (showDate) (timeHeight * 0.2f) else 0f
-            val totalHeight = timeHeight + verticalGap + dateHeight
+            val verticalGap = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, 8f,
+                android.content.res.Resources.getSystem().displayMetrics
+            )
+            val totalHeight = timeHeight + (if (showDate) verticalGap else 0f) + dateHeight
             
-            val paddingH = totalWidth * 0.2f
-            val paddingV = totalHeight * 0.2f
-            
-            val requiredWidth = totalWidth + paddingH * 2
-            val requiredHeight = totalHeight + paddingV * 2
-            
-            if (requiredWidth <= maxWidth && requiredHeight <= maxHeight) {
+            if (totalWidth <= maxWidth && totalHeight <= maxHeight) {
                 break
             }
             
-            timeSize *= 0.95f
-            dateSize *= 0.95f
+            timeSize *= 0.98f
+            dateSize *= 0.98f
             iteration++
         }
         
