@@ -17,12 +17,21 @@
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.example.teluguclockwidget.ACTION_AUTO_UPDATE" />
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/telugu_clock_widget_info" />
+        </receiver>
+
+        <!-- Time Tick Receiver -->
+        <receiver
+            android:name=".TimeTickReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.TIME_TICK" />
+            </intent-filter>
         </receiver>
 
         <!-- Configure Activity -->
@@ -34,6 +43,12 @@
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
+
+        <!-- Clock Tick Service -->
+        <service
+            android:name=".ClockTickService"
+            android:enabled="true"
+            android:exported="false" />
 
     </application>
 </manifest>
